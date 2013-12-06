@@ -30,31 +30,16 @@ Sip: class {
         pt := t& as UInt8*
         m := in as UInt8*
 
-        // Unrolled duff's device :(
-        match (srcSize) {
-            case 7 =>
-                pt[6] = m[6]
-                pt[5] = m[5]
-                pt[4] = m[4]
-                (pt as UInt32*)@ = (m as UInt32*)@
-            case 6 =>
-                pt[5] = m[5]
-                pt[4] = m[4]
-                (pt as UInt32*)@ = (m as UInt32*)@
-            case 5 =>
-                pt[4] = m[4]
-                (pt as UInt32*)@ = (m as UInt32*)@
-            case 4 =>
-                (pt as UInt32*)@ = (m as UInt32*)@
-            case 3 =>
-                pt[2] = m[2]
-                pt[1] = m[1]
-                pt[0] = m[0]
-            case 2 =>
-                pt[1] = m[1]
-                pt[0] = m[0]
-            case 1 =>
-                pt[0] = m[0]
+        // C code was using duff's device :|
+        while (srcSize > 0) {
+            match (srcSize) {
+                case 4 =>
+                    (pt as UInt32*)@ = (m as UInt32*)@
+                    break
+                case =>
+                    pt[srcSize - 1] = m[srcSize - 1]
+                    srcSize -= 1
+            }
         }
         b |= _le64toh(t)
 
