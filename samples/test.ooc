@@ -2,24 +2,7 @@ use oocsiphash
 import oocsiphash
 
 main: func {
-    key := [
-        '\x00',
-        '\x01',
-        '\x02',
-        '\x03',
-        '\x04',
-        '\x05',
-        '\x06',
-        '\x07',
-        '\x08',
-        '\x09',
-        '\x0a',
-        '\x0b',
-        '\x0c',
-        '\x0d',
-        '\x0e',
-        '\x0f'
-    ] as Char*
+    key: Char* = [ 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 0xa, 0xb, 0xc, 0xd, 0xe, 0xf ]
 
     pt := "hello world!"
     hash := Sip hash24(pt toCString(), pt size, key)
