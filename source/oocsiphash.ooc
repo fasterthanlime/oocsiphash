@@ -3,8 +3,7 @@ include ./siphash_base
 
 _le64toh: extern func (UInt64) -> UInt64
 _SIPCONST1, _SIPCONST2, _SIPCONST3, _SIPCONST4: extern UInt64
-
-//DOUBLE_ROUND: extern func (UInt64, UInt64, UInt64, UInt64)
+DOUBLE_ROUND: extern func (UInt64, UInt64, UInt64, UInt64)
 
 Sip: class {
 
