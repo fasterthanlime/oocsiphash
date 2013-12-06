@@ -1,7 +1,17 @@
 use oocsiphash
 include ./siphash_base
 
-_le64toh: extern func (UInt64) -> UInt64
+import io/BinarySequence 
+
+_le64toh: func (a: UInt64) -> UInt64 {
+    match ENDIANNESS {
+        case Endianness little =>
+            a
+        case =>
+            reverseBytes(a)
+    }
+}
+
 _SIPCONST1, _SIPCONST2, _SIPCONST3, _SIPCONST4: extern UInt64
 
 Sip: class {
