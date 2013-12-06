@@ -27,20 +27,9 @@ Sip: class {
         }
 
         t: UInt64 = 0
-        pt := t& as UInt8*
-        m := in as UInt8*
 
-        // C code was using duff's device :|
-        while (srcSize > 0) {
-            match (srcSize) {
-                case 4 =>
-                    (pt as UInt32*)@ = (m as UInt32*)@
-                    break
-                case =>
-                    pt[srcSize - 1] = m[srcSize - 1]
-                    srcSize -= 1
-            }
-        }
+        // C code was using duff's device, let's bet on memcpy
+        memcpy(t&, in, srcSize)
         b |= _le64toh(t)
 
         v3 ^= b
