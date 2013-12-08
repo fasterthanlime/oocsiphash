@@ -1,20 +1,16 @@
 use oocsiphash
-include ./siphash_base
 
 import io/BinarySequence 
 
-_le64toh: func (a: UInt64) -> UInt64 {
-    match ENDIANNESS {
-        case Endianness little =>
-            a
-        case =>
-            reverseBytes(a)
-    }
-}
-
-_SIPCONST1, _SIPCONST2, _SIPCONST3, _SIPCONST4: extern UInt64
-
 Sip: class {
+
+    hash24: static func ~string (str: String, key: Char*) -> UInt64 {
+        hash24(str _buffer data, str size, key)
+    }
+
+    hash24: static func ~generic <T> (t: T, key: Char*) -> UInt64 {
+        hash24(t&, T size, key)
+    }
 
     hash24: static func (src: Pointer, srcSize: ULong, key: Char*) -> UInt64 {
         _key := key as UInt64*
@@ -23,10 +19,10 @@ Sip: class {
         b := (srcSize as UInt64) << (56 as UInt64)
         in := src as UInt64*
 
-        v0 := k0 ^ _SIPCONST1
-        v1 := k1 ^ _SIPCONST2
-        v2 := k0 ^ _SIPCONST3
-        v3 := k1 ^ _SIPCONST4
+        v0 := k0 ^ 0x736f6d6570736575ULL
+        v1 := k1 ^ 0x646f72616e646f6dULL
+        v2 := k0 ^ 0x6c7967656e657261ULL
+        v3 := k1 ^ 0x7465646279746573ULL
 
         while (srcSize >= 8) {
             mi := _le64toh(in@)
@@ -66,6 +62,15 @@ Sip: class {
         HALF_ROUND(v2&, v1&, v0&, v3&, 17, 21)
         HALF_ROUND(v0&, v1&, v2&, v3&, 13, 16)
         HALF_ROUND(v2&, v1&, v0&, v3&, 17, 21)
+    }
+
+    _le64toh: static func (a: UInt64) -> UInt64 {
+        match ENDIANNESS {
+            case Endianness little =>
+                a
+            case =>
+                reverseBytes(a)
+        }
     }
 }
 
